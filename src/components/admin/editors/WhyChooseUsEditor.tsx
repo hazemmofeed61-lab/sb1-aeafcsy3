@@ -1,0 +1,188 @@
+import React, { useState } from 'react';
+import { useCMS } from '../../../context/CMSContext';
+import { Plus, Edit2, Trash2, Save, X } from 'lucide-react';
+import { WhyChooseUs } from '../../../types';
+
+const WhyChooseUsEditor: React.FC = () => {
+  const { whyChooseUs, addWhyChooseUs, updateWhyChooseUs, deleteWhyChooseUs } = useCMS();
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [isAdding, setIsAdding] = useState(false);
+  const [formData, setFormData] = useState<Partial<WhyChooseUs>>({
+    title: '',
+    description: '',
+    icon: 'star',
+    orderIndex: whyChooseUs.length + 1,
+    isActive: true
+  });
+
+  const handleSave = () => {
+    if (editingId) {
+      updateWhyChooseUs(editingId, formData);
+      setEditingId(null);
+    } else {
+      addWhyChooseUs(formData as Omit<WhyChooseUs, 'id'>);
+      setIsAdding(false);
+    }
+    setFormData({
+      title: '',
+      description: '',
+      icon: 'star',
+      orderIndex: whyChooseUs.length + 1,
+      isActive: true
+    });
+  };
+
+  const handleEdit = (item: WhyChooseUs) => {
+    setEditingId(item.id);
+    setFormData(item);
+    setIsAdding(false);
+  };
+
+  const handleCancel = () => {
+    setEditingId(null);
+    setIsAdding(false);
+    setFormData({
+      title: '',
+      description: '',
+      icon: 'star',
+      orderIndex: whyChooseUs.length + 1,
+      isActive: true
+    });
+  };
+
+  const iconOptions = ['badge-check', 'clock', 'receipt', 'users', 'star', 'award', 'check-circle', 'shield'];
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold text-slate-900">محرر لماذا تختارنا</h2>
+        {!isAdding && !editingId && (
+          <button
+            onClick={() => setIsAdding(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-900 transition-colors"
+          >
+            <Plus size={20} />
+            <span>إضافة عنصر</span>
+          </button>
+        )}
+      </div>
+
+      {(isAdding || editingId) && (
+        <div className="mb-6 p-6 bg-slate-50 rounded-lg">
+          <h3 className="text-lg font-semibold mb-4">
+            {editingId ? 'تعديل عنصر' : 'إضافة عنصر جديد'}
+          </h3>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">العنوان</label>
+              <input
+                type="text"
+                value={formData.title}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-800 focus:border-transparent"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">الوصف</label>
+              <textarea
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                rows={3}
+                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-800 focus:border-transparent resize-none"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">الأيقونة</label>
+              <select
+                value={formData.icon}
+                onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
+                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-800 focus:border-transparent"
+              >
+                {iconOptions.map(icon => (
+                  <option key={icon} value={icon}>{icon}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="isActive"
+                checked={formData.isActive}
+                onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
+                className="w-4 h-4 text-slate-800 rounded focus:ring-slate-800"
+              />
+              <label htmlFor="isActive" className="text-sm font-medium text-slate-700">
+                نشط (ظاهر على الموقع)
+              </label>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={handleSave}
+                className="flex items-center gap-2 px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-900 transition-colors"
+              >
+                <Save size={20} />
+                <span>حفظ</span>
+              </button>
+              <button
+                onClick={handleCancel}
+                className="flex items-center gap-2 px-4 py-2 bg-slate-200 text-slate-700 rounded-lg hover:bg-slate-300 transition-colors"
+              >
+                <X size={20} />
+                <span>إلغاء</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="grid gap-4">
+        {whyChooseUs.sort((a, b) => a.orderIndex - b.orderIndex).map((item) => (
+          <div
+            key={item.id}
+            className={`p-4 rounded-lg border-2 ${
+              item.isActive ? 'bg-white border-slate-200' : 'bg-slate-100 border-slate-300 opacity-60'
+            }`}
+          >
+            <div className="flex items-start justify-between">
+              <div className="flex-1">
+                <h3 className="font-semibold text-lg text-slate-900">{item.title}</h3>
+                <p className="text-slate-600 mt-1">{item.description}</p>
+                <div className="flex items-center gap-4 mt-2 text-sm text-slate-500">
+                  <span>الأيقونة: {item.icon}</span>
+                  <span>الترتيب: {item.orderIndex}</span>
+                  <span className={item.isActive ? 'text-green-600' : 'text-red-600'}>
+                    {item.isActive ? 'نشط' : 'غير نشط'}
+                  </span>
+                </div>
+              </div>
+              <div className="flex gap-2 ml-4">
+                <button
+                  onClick={() => handleEdit(item)}
+                  className="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded transition-colors"
+                >
+                  <Edit2 size={18} />
+                </button>
+                <button
+                  onClick={() => {
+                    if (confirm('هل أنت متأكد من حذف هذا العنصر؟')) {
+                      deleteWhyChooseUs(item.id);
+                    }
+                  }}
+                  className="p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded transition-colors"
+                >
+                  <Trash2 size={18} />
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default WhyChooseUsEditor;
