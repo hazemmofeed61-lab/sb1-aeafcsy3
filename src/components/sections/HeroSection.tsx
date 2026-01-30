@@ -1,6 +1,6 @@
 import React from 'react';
 import { useCMS } from '../../context/CMSContext';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Phone } from 'lucide-react';
 
 const HeroSection: React.FC = () => {
   const { hero } = useCMS();
@@ -24,14 +24,24 @@ const HeroSection: React.FC = () => {
         <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto animate-fadeInUp" style={{ animationDelay: '0.2s' }}>
           {hero.subtitle}
         </p>
-        <a
-          href={hero.ctaLink}
-          className="inline-flex items-center space-x-2 px-8 py-4 bg-white text-slate-900 rounded-lg font-semibold text-lg hover:bg-slate-100 transition-all duration-300 hover:scale-105 animate-fadeInUp shadow-lg"
-          style={{ animationDelay: '0.4s' }}
-        >
-          <span>{hero.ctaText}</span>
-          <ArrowRight size={20} />
-        </a>
+        <div className="flex flex-col items-center gap-6">
+          <a
+            href={hero.ctaLink}
+            className="inline-flex items-center space-x-2 px-8 py-4 bg-white text-slate-900 rounded-lg font-semibold text-lg hover:bg-slate-100 transition-all duration-300 hover:scale-105 animate-fadeInUp shadow-lg"
+            style={{ animationDelay: '0.4s' }}
+          >
+            <span>{hero.ctaText}</span>
+            <ArrowRight size={20} />
+          </a>
+          <a
+            href="tel:+971545400778"
+            className="inline-flex items-center gap-3 text-white text-xl font-medium hover:text-white/80 transition-all duration-300 hover:scale-105 animate-fadeInUp"
+            style={{ animationDelay: '0.6s' }}
+          >
+            <Phone size={24} />
+            <span dir="ltr">+971545400778</span>
+          </a>
+        </div>
       </div>
 
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
