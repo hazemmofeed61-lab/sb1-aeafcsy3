@@ -2,6 +2,7 @@ import React from 'react';
 import { CMSProvider } from './context/CMSContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import FloatingWhatsAppButton from './components/FloatingWhatsAppButton';
 import HeroSection from './components/sections/HeroSection';
 import AboutSection from './components/sections/AboutSection';
 import ServicesSection from './components/sections/ServicesSection';
@@ -23,6 +24,7 @@ function App() {
           <ContactSection />
         </main>
         <Footer />
+        <FloatingWhatsAppButton />
       </div>
     </CMSProvider>
   );
